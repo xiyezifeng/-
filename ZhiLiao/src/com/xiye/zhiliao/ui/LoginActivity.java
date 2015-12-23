@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -71,6 +72,27 @@ public class LoginActivity extends BaseActivity{
 				startActivity(intent);
 			}
 		});
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		boolean isRegister = PreferencesManager.getInstance().getLoginState();
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			if(isRegister){
+				Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+				startActivity(intent);
+			}else{
+				finish();
+				System.exit(0);
+			}
+			break;
+
+		default:
+			break;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	private String currentUsername;
@@ -152,6 +174,8 @@ public class LoginActivity extends BaseActivity{
 					}
 				});
 				finish();
+				Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+				startActivity(intent);
 			}
 
 			@Override

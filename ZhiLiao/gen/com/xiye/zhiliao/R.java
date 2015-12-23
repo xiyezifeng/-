@@ -475,14 +475,24 @@ containing a value of this type.
         public static final int ee_8=0x7f0200a6;
         public static final int ee_9=0x7f0200a7;
         public static final int em_add=0x7f0200a8;
-        public static final int em_new_friends_icon=0x7f0200a9;
-        public static final int ic_launcher=0x7f0200aa;
+        public static final int em_button_bg=0x7f0200a9;
+        public static final int em_button_login_bg=0x7f0200aa;
+        public static final int em_button_myprofile_selector=0x7f0200ab;
+        public static final int em_button_normal_shape=0x7f0200ac;
+        public static final int em_button_register_bg=0x7f0200ad;
+        public static final int em_button_selector_shape=0x7f0200ae;
+        public static final int em_default_avatar=0x7f0200af;
+        public static final int em_new_friends_icon=0x7f0200b0;
+        public static final int ic_launcher=0x7f0200b1;
+        public static final int zhiliao_loading=0x7f0200b2;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a006f;
-        public static final int add_to_blacklist=0x7f0a006d;
+        public static final int action_settings=0x7f0a0076;
+        public static final int add_list_friends=0x7f0a0066;
+        public static final int add_to_blacklist=0x7f0a0074;
+        public static final int agree=0x7f0a0071;
         public static final int alert_message=0x7f0a000b;
-        public static final int application_item=0x7f0a0066;
+        public static final int application_item=0x7f0a006c;
         public static final int avatar=0x7f0a0022;
         public static final int avatar_container=0x7f0a0021;
         public static final int bmapView=0x7f0a0005;
@@ -504,9 +514,11 @@ containing a value of this type.
         public static final int chatting_video_data_area=0x7f0a0037;
         public static final int close=0x7f0a0000;
         public static final int contact_list=0x7f0a001a;
+        public static final int container=0x7f0a006b;
         public static final int content_container=0x7f0a0019;
-        public static final int delete_contact=0x7f0a006c;
-        public static final int delete_conversation=0x7f0a006e;
+        public static final int delete_contact=0x7f0a0073;
+        public static final int delete_conversation=0x7f0a0075;
+        public static final int edit_note=0x7f0a0068;
         public static final int edittext_layout=0x7f0a004f;
         public static final int emojicon=0x7f0a001d;
         public static final int emojicon_menu_container=0x7f0a004a;
@@ -518,6 +530,7 @@ containing a value of this type.
         public static final int gridview=0x7f0a0013;
         public static final int header=0x7f0a0028;
         public static final int image=0x7f0a0006;
+        public static final int indicator=0x7f0a006a;
         public static final int indicator_view=0x7f0a0059;
         public static final int input_menu=0x7f0a0015;
         public static final int iv_call_icon=0x7f0a003b;
@@ -536,8 +549,9 @@ containing a value of this type.
         public static final int list_itease_layout=0x7f0a0020;
         public static final int ll_face_container=0x7f0a0011;
         public static final int ll_loading=0x7f0a0034;
+        public static final int ll_user=0x7f0a0069;
         public static final int loading_layout=0x7f0a0008;
-        public static final int login_btn=0x7f0a0069;
+        public static final int login_btn=0x7f0a006f;
         public static final int main_vp=0x7f0a0002;
         public static final int message=0x7f0a0027;
         public static final int message_list=0x7f0a0016;
@@ -555,7 +569,7 @@ containing a value of this type.
         public static final int progress_bar=0x7f0a002e;
         public static final int query=0x7f0a0044;
         public static final int recording_hint=0x7f0a0065;
-        public static final int register_btn=0x7f0a006b;
+        public static final int register_btn=0x7f0a0072;
         public static final int right_image=0x7f0a0063;
         public static final int right_layout=0x7f0a0062;
         public static final int rl_bottom=0x7f0a004b;
@@ -563,6 +577,7 @@ containing a value of this type.
         public static final int rl_picture=0x7f0a0042;
         public static final int root=0x7f0a005f;
         public static final int scroll_view=0x7f0a005b;
+        public static final int search=0x7f0a0067;
         public static final int search_bar_view=0x7f0a0018;
         public static final int search_clear=0x7f0a0045;
         public static final int sidebar=0x7f0a0056;
@@ -575,7 +590,7 @@ containing a value of this type.
         public static final int timestamp=0x7f0a002a;
         public static final int title=0x7f0a0003;
         public static final int title_bar=0x7f0a0014;
-        public static final int to_register_btn=0x7f0a006a;
+        public static final int to_register_btn=0x7f0a0070;
         public static final int tv_ack=0x7f0a0040;
         public static final int tv_chatcontent=0x7f0a0033;
         public static final int tv_delivered=0x7f0a0041;
@@ -587,8 +602,8 @@ containing a value of this type.
         public static final int tv_name=0x7f0a001f;
         public static final int tv_userid=0x7f0a002d;
         public static final int unread_msg_number=0x7f0a0023;
-        public static final int user_id=0x7f0a0067;
-        public static final int user_pwd=0x7f0a0068;
+        public static final int user_id=0x7f0a006d;
+        public static final int user_pwd=0x7f0a006e;
         public static final int vPager=0x7f0a0012;
         public static final int voice_recorder=0x7f0a0017;
     }
@@ -643,11 +658,15 @@ containing a value of this type.
         public static final int ease_widget_switch_button=0x7f03002f;
         public static final int ease_widget_title_bar=0x7f030030;
         public static final int ease_widget_voice_recorder=0x7f030031;
-        public static final int em_contacts_header=0x7f030032;
-        public static final int em_layout_loading_data=0x7f030033;
-        public static final int em_widget_contact_item=0x7f030034;
-        public static final int login=0x7f030035;
-        public static final int register=0x7f030036;
+        public static final int em_activity_add_contact=0x7f030032;
+        public static final int em_activity_chat=0x7f030033;
+        public static final int em_activity_new_friends_msg=0x7f030034;
+        public static final int em_contacts_header=0x7f030035;
+        public static final int em_layout_loading_data=0x7f030036;
+        public static final int em_widget_contact_item=0x7f030037;
+        public static final int login=0x7f030038;
+        public static final int new_friend_item=0x7f030039;
+        public static final int register=0x7f03003a;
     }
     public static final class menu {
         public static final int em_context_contact_list=0x7f090000;

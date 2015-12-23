@@ -1,7 +1,10 @@
 package com.xiye.zhiliao.ui;
 
+import java.util.List;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -16,6 +19,8 @@ import android.widget.Toast;
 import com.easemob.chat.EMContactManager;
 import com.easemob.easeui.domain.EaseUser;
 import com.easemob.easeui.ui.EaseContactListFragment;
+import com.easemob.exceptions.EaseMobException;
+import com.xiye.zhiliao.AppHelper;
 import com.xiye.zhiliao.R;
 import com.xiye.zhiliao.ui.widget.ChatContactItemView;
 
@@ -38,13 +43,32 @@ public class ContactListFragment extends EaseContactListFragment {
         contentContainer.addView(loadingView);
         //注册上下文菜单
         registerForContextMenu(listView);
+        
+        
     }
     
     @Override
     public void refresh() {
+    	try {
+			List<String> friends = 	EMContactManager.getInstance().getContactUserNames();
+			Log.i("zhiliao","APPhelper 输出 好友"+ friends.size());
+			for (int i = 0; i < friends.size(); i++) {
+				EaseUser user = new EaseUser(friends.get(i));
+				AppHelper.toAddUsers.put(friends.get(i), user);
+			}
+			setContactsMap(AppHelper.toAddUsers);
+		} catch (EaseMobException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         super.refresh();
     }
     
+    @Override
+    public void onResume() {
+    	// TODO Auto-generated method stub
+    	super.onResume();
+    }
     
     @Override
     protected void setUpView() {
@@ -76,6 +100,7 @@ public class ContactListFragment extends EaseContactListFragment {
 
             @Override
             public void onClick(View v) {
+            	Toast.makeText(getActivity(), "好友数量  :  " + contactList.size(), 0).show(); 
                 startActivity(new Intent(getActivity(), AddContactActivity.class));
             }
         });
@@ -131,6 +156,8 @@ public class ContactListFragment extends EaseContactListFragment {
 		}
 		return super.onContextItemSelected(item);
 	}
+	
+	
 
 
 	/**

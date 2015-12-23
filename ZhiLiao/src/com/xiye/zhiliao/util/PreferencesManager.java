@@ -1,7 +1,5 @@
 package com.xiye.zhiliao.util;
 
-import java.util.prefs.Preferences;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;

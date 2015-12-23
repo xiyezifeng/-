@@ -1,7 +1,10 @@
 package com.xiye.zhiliao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -14,7 +17,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.easemob.EMEventListener;
+import com.easemob.EMNotifierEvent;
+import com.easemob.chat.CmdMessageBody;
 import com.easemob.chat.EMChat;
+import com.easemob.chat.EMChatDB;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMContactListener;
 import com.easemob.chat.EMContactManager;
@@ -23,6 +30,8 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.easeui.controller.EaseUI;
 import com.easemob.easeui.domain.EaseUser;
+import com.easemob.easeui.model.EaseNotifier;
+import com.easemob.exceptions.EaseMobException;
 
 public class AppHelper {
 	
@@ -33,6 +42,11 @@ public class AppHelper {
 	private SharedPreferences preferences;
 	
 	private EaseUI easeUI;
+	
+	public static List<String> friendMessage = new ArrayList<String>();
+	public static Map<String, EaseUser> toAddUsers = new HashMap<String, EaseUser>();
+	
+	public EMEventListener   eventListener ;
 	
 	public static AppHelper getInstanse(){
 		synchronized(AppHelper.class){
@@ -52,7 +66,7 @@ public class AppHelper {
 			int pid = android.os.Process.myPid();
 			String processAppName = getAppName(pid);
 			
-			if (processAppName == null ||!processAppName.equalsIgnoreCase("com.easemob.chatuidemo")) {
+			if (processAppName == null ||!processAppName.equalsIgnoreCase("com.xiye.zhiliao")) {
 			    //"com.easemob.chatuidemo"为demo的包名，换到自己项目中要改成自己包名
 			    // 则此application::onCreate 是被service 调用的，直接返回
 			    return;
@@ -60,7 +74,6 @@ public class AppHelper {
 			
 			EMChat.getInstance().init(context);
 			EMChat.getInstance().setDebugMode(true);
-			
 			preferences = context.getSharedPreferences("zhiliao", Activity.MODE_PRIVATE);
 			//设为调试模式，打成正式包时，最好设为false，以免消耗额外的资源
 		    EMChat.getInstance().setDebugMode(true);
@@ -76,7 +89,8 @@ public class AppHelper {
 		    addGlobalLisener();
 		    
 		    //最后要通知sdk，UI 已经初始化完毕，注册了相应的receiver和listener, 可以接受broadcast了
-		    EMChat.getInstance().setAppInited();
+//		    EMChat.getInstance().setAppInited();
+		}else{
 		}
 	}
 	
@@ -257,7 +271,7 @@ public class AppHelper {
         if(username.equals(EMChatManager.getInstance().getCurrentUser()))
             return getUserProfileManager().getCurrentUserInfo();
         user = getContactList().get(username);
-        //TODO 获取不在好友列表里的群成员具体信息，即陌生人信息，demo未实现
+        // 获取不在好友列表里的群成员具体信息，即陌生人信息，demo未实现
         if(user == null && getRobotList() != null){
             user = getRobotList().get(username);
         }*/
@@ -265,6 +279,7 @@ public class AppHelper {
 	}
 	
 	private void addGlobalLisener(){
+		
 		NewMessageBroadcastReceiver msgReceiver = new NewMessageBroadcastReceiver();
 		IntentFilter intentFilter = new IntentFilter(EMChatManager.getInstance().getNewMessageBroadcastAction());
 		intentFilter.setPriority(3);
@@ -278,15 +293,19 @@ public class AppHelper {
 		context.registerReceiver(ackMessageReceiver, ackMessageIntentFilter);
 		
 		EMContactManager.getInstance().setContactListener(new MyContactListener());
+		
+		/*IntentFilter inviteIntentFilter = new IntentFilter(EMChatManager.getInstance().getContactInviteEventBroadcastAction());
+		inviteIntentFilter.setPriority(3);
+		context.registerReceiver(new ContactInviteReceiver(), inviteIntentFilter);*/
+		registerEventListener();
 	}
 	
 	private class NewMessageBroadcastReceiver extends BroadcastReceiver{
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
 			abortBroadcast();
-			 
+			Log.i("zhiliao", "收到一条消息，需要刷新UI" );
 			// 消息id（每条消息都会生成唯一的一个id，目前是SDK生成）
 			String msgId = intent.getStringExtra("msgid");
 			//发送方
@@ -302,6 +321,7 @@ public class AppHelper {
 				// 消息不是发给当前会话，return
 				return;
 			}
+			
 		}
 	}
 	
@@ -309,7 +329,6 @@ public class AppHelper {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
 			abortBroadcast();
 			String msgid = intent.getStringExtra("msgid");
 			String from = intent.getStringExtra("from");
@@ -327,33 +346,136 @@ public class AppHelper {
 	private class MyContactListener implements EMContactListener{
 
 		@Override
-		public void onContactAdded(List<String> arg0) {
-			// 保存增加的联系人
-		}
-
-		@Override
-		public void onContactAgreed(String arg0) {
-			//同意好友请求
-			
-		}
-
-		@Override
-		public void onContactDeleted(List<String> arg0) {
-			// 被删除
-			
-		}
-
-		@Override
-		public void onContactInvited(String arg0, String arg1) {
-			// 接到邀请的消息，如果不处理(同意或拒绝)，掉线后，服务器会自动再发过来，所以客户端不要重复提醒
-			
-		}
-
-		@Override
-		public void onContactRefused(String arg0) {
-			// 拒绝好友请求
-			
-		}
+		   public void onContactAgreed(String username) {
+		       //好友请求被同意
+			Log.i("zhiliao", "onContactAgreed  好友请求被同意 :" + username +"____信息 : ");
+		   }
+		   
+		   @Override
+		   public void onContactRefused(String username) {
+		       //好友请求被拒绝
+			   Log.i("zhiliao", "onContactAgreed  好友请求被拒绝 :" + username +"____信息 : ");
+		   }
+		   
+		   @Override
+		   public void onContactInvited(String username, String reason) {
+		       //收到好友邀请
+			   Log.i("zhiliao", "收到好友邀请 :" + username +"____信息 : "+reason);
+			   if(!friendMessage.contains(username)){
+				   friendMessage.add(username);
+				   Log.i("zhiliao", "好友请求数组 增加一条 :" + username );
+			   }
+		   }
+		   
+		   @Override
+		   public void onContactDeleted(List<String> usernameList) {
+		       //被删除时回调此方法
+			   Log.i("zhiliao", "被删除时 :" + usernameList.size() +"____移除 : ");
+		   }
+		   
+		   @Override
+		   public void onContactAdded(List<String> usernameList) {
+		       //增加了联系人时回调此方法
+			   Log.i("zhiliao", "增加了联系 人 :" + usernameList.size() +"____增加 : ");
+		   }
 		
+	}
+	 /**
+     * 全局事件监听
+     * 因为可能会有UI页面先处理到这个消息，所以一般如果UI页面已经处理，这里就不需要再次处理
+     * activityList.size() <= 0 意味着所有页面都已经在后台运行，或者已经离开Activity Stack
+     */
+    protected void registerEventListener() {
+    	eventListener = new EMEventListener() {
+//            private BroadcastReceiver broadCastReceiver = null;
+            
+            @Override
+            public void onEvent(EMNotifierEvent event) {
+                EMMessage message = null;
+                if(event.getData() instanceof EMMessage){
+                    message = (EMMessage)event.getData();
+                    Log.i("zhiliao", "AppHelper   收到消息 : " + event.getEvent() + ",id : " + message.getMsgId());
+                }
+                
+                switch (event.getEvent()) {
+                case EventNewMessage:
+                	
+                    //应用在后台，不需要刷新UI,通知栏提示新消息
+                    if(!easeUI.hasForegroundActivies()){
+                    	//通知接收到新消息，sdk处理完成后会发送通知者事件，在mainactivity接受
+                        getNotifier().onNewMsg(message);
+                        Log.i("zhiliao", "后台运行    需要走通知栏 : " + message.getBody());
+                    }else{
+                    	Log.i("zhiliao", "收到新消息     :   " + message.getBody());
+                    }
+                    
+                    break;
+                case EventOfflineMessage:
+                    if(!easeUI.hasForegroundActivies()){
+                        /*EMLog.d(TAG, "received offline messages");
+                        List<EMMessage> messages = (List<EMMessage>) event.getData();
+                        getNotifier().onNewMesg(messages);*/
+                        Log.i("zhiliao", "离线消息");
+                    }
+                    break;
+                // below is just giving a example to show a cmd toast, the app should not follow this
+                // so be careful of this
+                case EventNewCMDMessage:
+                { 
+                    
+                	Log.i("zhiliao", "收到透传消息 ");
+                    //获取消息body
+                    CmdMessageBody cmdMsgBody = (CmdMessageBody) message.getBody();
+                    final String action = cmdMsgBody.action;//获取自定义action
+                    
+                    //获取扩展属性 此处省略
+                    //message.getStringAttribute("");
+                    /*EMLog.d(TAG, String.format("透传消息：action:%s,message:%s", action,message.toString()));
+                    final String str = appContext.getString(R.string.receive_the_passthrough);
+                    
+                    final String CMD_TOAST_BROADCAST = "easemob.demo.cmd.toast";
+                    IntentFilter cmdFilter = new IntentFilter(CMD_TOAST_BROADCAST);
+                    
+                    if(broadCastReceiver == null){
+                        broadCastReceiver = new BroadcastReceiver(){
+
+                            @Override
+                            public void onReceive(Context context, Intent intent) {
+                                // TODO Auto-generated method stub
+                                Toast.makeText(appContext, intent.getStringExtra("cmd_value"), Toast.LENGTH_SHORT).show();
+                            }
+                        };
+                        
+                      //注册广播接收者
+                        appContext.registerReceiver(broadCastReceiver,cmdFilter);
+                    }
+
+                    Intent broadcastIntent = new Intent(CMD_TOAST_BROADCAST);
+                    broadcastIntent.putExtra("cmd_value", str+action);
+                    appContext.sendBroadcast(broadcastIntent, null);*/
+                    
+                    break;
+                }
+                case EventDeliveryAck:
+                    message.setDelivered(true);
+                    Log.i("zhiliao", "App Helper  处理消息， EventDeliveryAck");
+                    break;
+                case EventReadAck:
+                    message.setAcked(true);
+                    Log.i("zhiliao", "App Helper  处理消息， EventReadAck");
+                    break;
+                // add other events in case you are interested in
+                default:
+                    break;
+                }
+                
+            }
+        };
+        
+        EMChatManager.getInstance().registerEventListener(eventListener);
+    }
+    
+    public EaseNotifier getNotifier(){
+	    return easeUI.getNotifier();
 	}
 }

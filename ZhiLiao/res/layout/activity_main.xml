@@ -3,11 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.xiye.zhiliao.MainActivity" >
+    
+    
 
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/main_vp"
         />
+    
 
 </RelativeLayout>
